@@ -1,2 +1,2 @@
 # PlatoRepo
-a set of utility to dig data in the Pato CAM test repository
+a set of utility to dig data in the Plato CAM test repository
