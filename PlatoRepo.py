@@ -13,10 +13,10 @@ __status__ = "beta"
 # Ver       Date       Description
 # --------- ---------- -----------------------------------------------
 #     0.0.1 2023-12-20 Beta
-__version__ = "0.0.1_20231220"
+#     0.0.2 2023-12-21 timestamp column used in case no param dedicated timestamp "_ts" exists 
+__version__ = "0.0.2_20231221"
 
 import pandas as pd
-import yaml
 import os
 import numpy as np
 
@@ -122,7 +122,14 @@ class HK:
 
         def getValuesByOBSID(self,obsid,OOLL=None,OOLH=None):
             obsidT = str(obsid).zfill(5)
-            pTime = self.pName+'_ts'
+            # define the time values
+            try:
+                pTime = self.pName+'_ts'
+                tab = pd.read_csv(f,header=0, usecols=[pTime])
+            except ValueError:
+                # in this case the column with the deidcated timestamps "_ts" does not exists
+                pTime = 'timestamp'
+                
             self.values = pd.DataFrame(columns=[pTime,self.pName])
             fc = 0
             OOL = False
@@ -191,9 +198,9 @@ class HK:
         
 
 # for debugging purpose:
-rootdir = '/archive/PLATO/IAS/'
-IAS_HK = HK(rootdir)
-IAS_HK.load('fm4')
-param = 'GTCS_TRP1_1_T'
-PP = IAS_HK.Param(param)
+# rootdir = '/archive/PLATO/IAS/'
+# IAS_HK = HK(rootdir)
+# IAS_HK.load('fm4')
+# param = 'GTCS_TRP1_1_T'
+# PP = IAS_HK.Param(param)
 
