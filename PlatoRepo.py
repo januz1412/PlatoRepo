@@ -13,7 +13,7 @@ __status__ = "beta"
 # Ver       Date       Description
 # --------- ---------- -----------------------------------------------
 #     0.0.1 2023-12-20 Beta
-#     0.0.2 2023-12-21 timestamp column used in case no param dedicated timestamp "_ts" exists 
+#     0.0.2 2023-12-21 "timestamp" column used in case no param dedicated timestamp "_ts" exists 
 __version__ = "0.0.2_20231221"
 
 import pandas as pd
@@ -125,7 +125,7 @@ class HK:
             # define the time values
             try:
                 pTime = self.pName+'_ts'
-                tab = pd.read_csv(f,header=0, usecols=[pTime])
+                tab = pd.read_csv(self.fileDB[0],header=0, usecols=[pTime])
             except ValueError:
                 # in this case the column with the deidcated timestamps "_ts" does not exists
                 pTime = 'timestamp'
@@ -155,7 +155,13 @@ class HK:
 
 
         def getValuesByTime(self,T0,T1,OOLL=None,OOLH=None):
-            pTime = self.pName+'_ts'
+            try:
+                pTime = self.pName+'_ts'
+                tab = pd.read_csv(self.fileDB[0],header=0, usecols=[pTime])
+            except ValueError:
+                # in this case the column with the deidcated timestamps "_ts" does not exists
+                pTime = 'timestamp'
+                
             self.values = pd.DataFrame(columns=[pTime,self.pName])
             fc = 0
             OOL = False
