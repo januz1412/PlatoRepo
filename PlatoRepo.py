@@ -292,7 +292,7 @@ class HK:
                 lastV = record['Values']
                 dTi = datetime.datetime.fromisoformat(T0) - datetime.datetime.fromisoformat(record['Time']) 
 
-            return ['Time':Time, 'Value':Value]
+            return [Time, Value]
         
 
 # for debugging purpose:
