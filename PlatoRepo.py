@@ -14,11 +14,14 @@ __status__ = "beta"
 # --------- ---------- -----------------------------------------------
 #     0.0.1 2023-12-20 Beta
 #     0.0.2 2023-12-21 "timestamp" column used in case no param dedicated timestamp "_ts" exists 
-__version__ = "0.0.2_20231221"
+#     0.0.3 2024-01-03 function "align2Parameters" added
+__version__ = "0.0.3_20240103"
 
 import pandas as pd
 import os
 import numpy as np
+import datetime as datetime
+
 
 # how to share variables among classes:
 #
@@ -81,6 +84,63 @@ def camId2Bier(camIdAlias):
         
         
     return CAMID
+
+def align2Parameters(RefParam,toBeAlignParam):
+    # this routine aligns the values of two parameters in order to have identical size and time base
+    # The update interval of the first parameter is taken as reference in order to compute the new vector
+    # Values of the second parameeter outside the domain of the firstone are ignored.
+    # For both parameters, the expected format is the HK class
+    refT = RefParam['Time']
+    newT = []
+    newV = []
+
+    p2T = toBeAlignParam['Time']
+    p2OV = toBeAlignParam['Values']
+    dT = datetime.datetime.fromisoformat(refT[1]) - datetime.datetime.fromisoformat(refT[0])
+
+    lastidx2 = 0
+    for idx in range(len(refT)-1):
+        Tinf = datetime.datetime.fromisoformat(refT[idx]) - dT/2
+        Tsup = datetime.datetime.fromisoformat(refT[idx]) + dT/2
+        np = 0
+        VV = 0
+        for idx2 in range(lastidx2,len(p2T)):
+            print(str(idx) + ' - ' + str(idx2))
+            t2 = datetime.datetime.fromisoformat(p2T[idx2])
+            if t2 >= Tinf and t2 <= Tsup:
+                lastidx2 = idx2
+                VV = VV + p2OV[idx2]
+                np += 1
+            if t2 > Tsup:
+                break
+        if np != 0:
+            newT.append(refT[idx])
+            newV.append(VV/np)
+        else:
+            newT.append(refT[idx])
+            newV.append(0.0)
+    Tinf = datetime.datetime.fromisoformat(refT[idx+1]) - dT/2
+    Tsup = datetime.datetime.fromisoformat(refT[idx+1]) + dT/2
+    np = 0
+    VV = 0
+    for idx2 in range(lastidx2,len(p2T)):
+        print(str(idx) + ' - ' + str(idx2))
+        t2 = datetime.datetime.fromisoformat(p2T[idx2])
+        if t2 >= Tinf and t2 <= Tsup:
+            VV = VV + p2OV[idx2]
+            np += 1
+        if t2 > Tsup:
+            break
+    if np != 0:
+        newT.append(refT[idx])
+        newV.append(VV/np)
+    else:
+        newT.append(refT[idx])
+        newV.append(0.0)
+    tab = {"Time": newT, "Values":newV}
+    newP = pd.DataFrame(tab)
+
+    return newP
 
 
 class HK:
@@ -207,6 +267,7 @@ class HK:
 # rootdir = '/archive/PLATO/IAS/'
 # IAS_HK = HK(rootdir)
 # IAS_HK.load('fm4')
-# param = 'GTCS_TRP1_1_T'
-# PP = IAS_HK.Param(param)
+# param = 'GTCS_TRP1_POUT'
+# TRP1 = IAS_HK.Param(param)
+#         
 
