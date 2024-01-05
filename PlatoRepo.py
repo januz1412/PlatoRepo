@@ -15,7 +15,8 @@ __status__ = "beta"
 #     0.0.1 2023-12-20 Beta
 #     0.0.2 2023-12-21 "timestamp" column used in case no param dedicated timestamp "_ts" exists 
 #     0.0.3 2024-01-03 function "align2Parameters" added
-__version__ = "0.0.3_20240103"
+#     0.0.4 2024-01-05 function "getValueAtTime" added
+__version__ = "0.0.4_20240105"
 
 import pandas as pd
 import os
@@ -213,7 +214,6 @@ class HK:
             return self.values
             
 
-
         def getValuesByTime(self,T0,T1,OOLL=None,OOLH=None):
             try:
                 pTime = self.pName+'_ts'
@@ -261,6 +261,38 @@ class HK:
             self.values.sort_values(by=['Time'], inplace=True, ignore_index=True)
             return self.values
 
+        def getValueAtTime(self,T0):
+            deltaT = 1 # minute
+            while True:
+                Tmindt = datetime.datetime.fromisoformat(T0) - datetime.timedelta(minutes=deltaT)
+                Tmaxdt = datetime.datetime.fromisoformat(T0) + datetime.timedelta(minutes=deltaT)
+                Tmin = Tmindt.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3]
+                Tmax = Tmaxdt.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3]
+                list = self.getValuesByTime(Tmin,Tmax)
+                if len(list) > 0:
+                    break
+                else:
+                    deltaT += 1
+            lastT = '2000-01-01T00:00:00.000'
+            lastV = 0
+            Time = None
+            Value = None
+
+            for record in list:
+                if record['Time'] >= T0:
+                    dTs = datetime.datetime.fromisoformat(record['Time']) - datetime.datetime.fromisoformat(T0)
+                    if dTs < dTi:
+                        Value = record['Values']
+                        Time = record['Time']
+                    else:
+                        Value = lastV
+                        Time = lastT
+                    break
+                lastT = record['Time']
+                lastV = record['Values']
+                dTi = datetime.datetime.fromisoformat(T0) - datetime.datetime.fromisoformat(record['Time']) 
+
+            return ['Time':Time, 'Value':Value]
         
 
 # for debugging purpose:
