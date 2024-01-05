@@ -105,7 +105,7 @@ def align2Parameters(RefParam,toBeAlignParam):
         np = 0
         VV = 0
         for idx2 in range(lastidx2,len(p2T)):
-            print(str(idx) + ' - ' + str(idx2))
+            # print(str(idx) + ' - ' + str(idx2))
             t2 = datetime.datetime.fromisoformat(p2T[idx2])
             if t2 >= Tinf and t2 <= Tsup:
                 lastidx2 = idx2
@@ -124,7 +124,7 @@ def align2Parameters(RefParam,toBeAlignParam):
     np = 0
     VV = 0
     for idx2 in range(lastidx2,len(p2T)):
-        print(str(idx) + ' - ' + str(idx2))
+        # print(str(idx) + ' - ' + str(idx2))
         t2 = datetime.datetime.fromisoformat(p2T[idx2])
         if t2 >= Tinf and t2 <= Tsup:
             VV = VV + p2OV[idx2]
