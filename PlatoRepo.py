@@ -278,19 +278,20 @@ class HK:
             Time = None
             Value = None
 
-            for record in list:
-                if record['Time'] >= T0:
-                    dTs = datetime.datetime.fromisoformat(record['Time']) - datetime.datetime.fromisoformat(T0)
+            for idx in range(len(list)):
+                theT = list['Time'][idx]
+                if theT >= T0:
+                    dTs = datetime.datetime.fromisoformat(theT) - datetime.datetime.fromisoformat(T0)
                     if dTs < dTi:
-                        Value = record['Values']
-                        Time = record['Time']
+                        Value = list['Values'][idx]
+                        Time = theT
                     else:
                         Value = lastV
                         Time = lastT
                     break
-                lastT = record['Time']
-                lastV = record['Values']
-                dTi = datetime.datetime.fromisoformat(T0) - datetime.datetime.fromisoformat(record['Time']) 
+                lastT = theT
+                lastV = list['Values'][idx]
+                dTi = datetime.datetime.fromisoformat(T0) - datetime.datetime.fromisoformat(theT) 
 
             return [Time, Value]
         
