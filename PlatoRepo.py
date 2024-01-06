@@ -262,12 +262,15 @@ class HK:
             return self.values
 
         def getValueAtTime(self,T0):
+            print(T0)
             deltaT = 1 # minute
             while True:
                 Tmindt = datetime.datetime.fromisoformat(T0) - datetime.timedelta(minutes=deltaT)
                 Tmaxdt = datetime.datetime.fromisoformat(T0) + datetime.timedelta(minutes=deltaT)
+                dTi = Tmaxdt - Tmindt
                 Tmin = Tmindt.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3]
                 Tmax = Tmaxdt.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3]
+                print(Tmin)
                 list = self.getValuesByTime(Tmin,Tmax)
                 if len(list) > 0:
                     break
@@ -280,6 +283,8 @@ class HK:
 
             for idx in range(len(list)):
                 theT = list['Time'][idx]
+                print(theT)
+                print(dTi)
                 if theT >= T0:
                     dTs = datetime.datetime.fromisoformat(theT) - datetime.datetime.fromisoformat(T0)
                     if dTs < dTi:
