@@ -16,7 +16,7 @@ __status__ = "beta"
 #     0.0.2 2023-12-21 "timestamp" column used in case no param dedicated timestamp "_ts" exists 
 #     0.0.3 2024-01-03 function "align2Parameters" added
 #     0.0.4 2024-01-05 function "getValueAtTime" added
-__version__ = "0.0.4_20240105"
+__version__ = "0.0.4_20240106"
 
 import pandas as pd
 import os
@@ -154,6 +154,7 @@ class HK:
         HK.fileDB = []
 
     def load(self,camId=None):            
+        print('Creating the HK file DB for CAM ' + camId + '....')
         for root, dirs_list, files_list in os.walk(self.rootDir):
             for fn in files_list:
                 if fn.split('.')[-1].lower() == 'csv':
@@ -161,6 +162,7 @@ class HK:
                         HK.fileDB.append(os.path.join(root, fn))
                     elif fn.lower().find(camId2Bier(camId)) != -1:
                         HK.fileDB.append(os.path.join(root, fn))
+        print(' ..... DONE. ' + str(len(self.fileDB)) + ' files in the DB')
         self.fileDB.sort()
 
     class Param:
@@ -169,6 +171,7 @@ class HK:
             # Examples
             # For TCS-HK  -> GTCS_TRP1_1_T
             # For N-FEE-HK -> NFEE_MODE
+            print('Creating the HK file DB for the parameter ' + pName + '....')
             self.fileDB = []
             self.pName = pName
             for f in HK.fileDB:
@@ -181,6 +184,8 @@ class HK:
                 else:
                     # print(f)
                     self.fileDB.append(f)
+            print(' ..... DONE. ' + str(len(self.fileDB)) + ' files in the DB')
+
 
         def getValuesByOBSID(self,obsid,OOLL=None,OOLH=None):
             obsidT = str(obsid).zfill(5)
@@ -263,7 +268,7 @@ class HK:
             return self.values
 
         def getValueAtTime(self,T0):
-            print(T0)
+            # print(T0)
             deltaT = 1 # minute
             while True:
                 Tmindt = datetime.datetime.fromisoformat(T0) - datetime.timedelta(minutes=deltaT)
@@ -284,8 +289,8 @@ class HK:
 
             for idx in range(len(list)):
                 theT = list['Time'][idx]
-                print(theT)
-                print(dTi)
+                # print(theT)
+                # print(dTi)
                 if theT >= T0:
                     dTs = datetime.datetime.fromisoformat(theT) - datetime.datetime.fromisoformat(T0)
                     if dTs < dTi:
@@ -298,7 +303,7 @@ class HK:
                 lastT = theT
                 lastV = list['Values'][idx]
                 dTi = datetime.datetime.fromisoformat(T0) - datetime.datetime.fromisoformat(theT) 
-
+            print('The value of ' + self.pName + ' at time ' + Time + ' is ' + str(Value))
             return [Time, Value]
         
 
