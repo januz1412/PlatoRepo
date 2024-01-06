@@ -173,7 +173,7 @@ class HK:
             for f in HK.fileDB:
                 ### TO IMPLEMENT: NA, None, Null, empty
                 try:
-                    pDB = pd.read_csv(f,header=0)
+                    pDB = pd.read_csv(f,header=0,low_memory=False)
                     test = pDB[pName]
                 except (KeyError, pd.errors.EmptyDataError):
                     pass
