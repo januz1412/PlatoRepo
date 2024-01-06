@@ -161,6 +161,7 @@ class HK:
                         HK.fileDB.append(os.path.join(root, fn))
                     elif fn.lower().find(camId2Bier(camId)) != -1:
                         HK.fileDB.append(os.path.join(root, fn))
+        self.fileDB.sort()
 
     class Param:
         def __init__(self,pName):
@@ -178,8 +179,8 @@ class HK:
                 except (KeyError, pd.errors.EmptyDataError):
                     pass
                 else:
-                    print(f)
-                    self.fileDB.append(f)        
+                    # print(f)
+                    self.fileDB.append(f)
 
         def getValuesByOBSID(self,obsid,OOLL=None,OOLH=None):
             obsidT = str(obsid).zfill(5)
