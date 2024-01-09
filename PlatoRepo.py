@@ -16,7 +16,8 @@ __status__ = "beta"
 #     0.0.2 2023-12-21 "timestamp" column used in case no param dedicated timestamp "_ts" exists 
 #     0.0.3 2024-01-03 function "align2Parameters" added
 #     0.0.4 2024-01-05 function "getValueAtTime" added
-__version__ = "0.0.4_20240106"
+#     0.0.5 2024-01-09 few cam aliases added
+__version__ = "0.0.5_20240109"
 
 import pandas as pd
 import os
@@ -72,13 +73,13 @@ def camId2Bier(camIdAlias):
         CAMID = 'floreffe'
     elif camIdAlias.lower() in ['gueuze', 'francoisepraderie', 'fm6', 'fm06']:
         CAMID = 'gueuze'
-    elif camIdAlias.lower() in ['h', 'robertemdem', 'fm7', 'fm07']:
+    elif camIdAlias.lower() in ['hoegaarden', 'robertemdem', 'fm7', 'fm07']:
         CAMID = 'h'
-    elif camIdAlias.lower() in ['i', 'anneliesescnell', 'fm8', 'fm08']:
+    elif camIdAlias.lower() in ['ichtegem', 'anneliesescnell', 'fm8', 'fm08']:
         CAMID = 'i'
-    elif camIdAlias.lower() in ['j', 'ottostruve', 'fm9', 'fm09']:
+    elif camIdAlias.lower() in ['joup', 'ottostruve', 'fm9', 'fm09']:
         CAMID = 'j'
-    elif camIdAlias.lower() in ['k', 'yvferrazpereira', 'fm10']:
+    elif camIdAlias.lower() in ['karmeliet', 'yvferrazpereira', 'fm10']:
         CAMID = 'k'
     elif camIdAlias.lower() in ['l', 'fmdacostalobo', 'fm11']:
         CAMID = 'l'
