@@ -309,10 +309,24 @@ class HK:
         
 
 # for debugging purpose:
-# rootdir = '/archive/PLATO/IAS/'
-# IAS_HK = HK(rootdir)
-# IAS_HK.load('fm4')
-# param = 'GTCS_TRP1_POUT'
-# TRP1 = IAS_HK.Param(param)
-#         
+if False:
+    rootdir = '/archive/PLATO/IAS/'
+    IAS_HK = HK(rootdir)
+    IAS_HK.load('fm4')
+    param = 'GTCS_TRP1_POUT'
+    TRP1_POUT = IAS_HK.Param(param)
+    obsid1234 = TRP1_POUT.getValuesByOBSID(obsid=1234)
+    print(obsid1234['Values'])
+    print(obsid1234['Time'])
+    fromT0toT1 = TRP1_POUT.getValuesByTime(T0='2020-01-01T00:00:00', T1='2025-12-31T00:00:00')
+    if min(fromT0toT1['Time']) < '2020-01-01T00:00:00':
+        print('condition impossible')
+    atTime, Value  = TRP1_POUT.getValueAtTime(T0='2022-10-10T08:00:00')
+    refParam = IAS_HK('NFEE_T_CCD1')
+    toBeAlignParam = IAS_HK('GTCS_TRP1_1')
+    newAlignedParameter = align2Parameters(RefParam,toBeAlignParam)
+
+
+
+            
 
