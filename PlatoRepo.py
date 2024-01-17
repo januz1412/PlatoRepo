@@ -308,8 +308,17 @@ class HK:
             return [Time, Value]
         
 
-# for debugging purpose:
+# for debugging and usage reference:
 if False:
+    ### proper include and initial configuration:
+    # import PlatoRepo as PR
+    # rootdir = 'myPath'
+    # TH_HK = PR.HK(rootdir)
+    # TH_HK.load('my_cam_id')
+    ### for the functions:
+    # newparam = PR.align2Parameters(RefParam,toBeAlignParam)
+    #
+    # now the example for debuggin purpose:
     rootdir = '/archive/PLATO/IAS/'
     IAS_HK = HK(rootdir)
     IAS_HK.load('fm4')
