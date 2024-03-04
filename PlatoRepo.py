@@ -17,7 +17,8 @@ __status__ = "beta"
 #     0.0.3 2024-01-03 function "align2Parameters" added
 #     0.0.4 2024-01-05 function "getValueAtTime" added
 #     0.0.5 2024-01-09 few cam aliases added
-__version__ = "0.0.5_20240109"
+#     0.0.6 2024-01-09 cam aliases added up to fm18
+__version__ = "0.0.6_20240304"
 
 import pandas as pd
 import os
@@ -74,15 +75,27 @@ def camId2Bier(camIdAlias):
     elif camIdAlias.lower() in ['gueuze', 'francoisepraderie', 'fm6', 'fm06']:
         CAMID = 'gueuze'
     elif camIdAlias.lower() in ['hoegaarden', 'robertemdem', 'fm7', 'fm07']:
-        CAMID = 'h'
+        CAMID = 'hoegaarden'
     elif camIdAlias.lower() in ['ichtegem', 'anneliesescnell', 'fm8', 'fm08']:
-        CAMID = 'i'
+        CAMID = 'ichtegem'
     elif camIdAlias.lower() in ['joup', 'ottostruve', 'fm9', 'fm09']:
-        CAMID = 'j'
+        CAMID = 'joup'
     elif camIdAlias.lower() in ['karmeliet', 'yvferrazpereira', 'fm10']:
-        CAMID = 'k'
-    elif camIdAlias.lower() in ['l', 'fmdacostalobo', 'fm11']:
-        CAMID = 'l'
+        CAMID = 'karmeliet'
+    elif camIdAlias.lower() in ['leopold7', 'antoniaferrin', 'fm12']:
+        CAMID = 'leopold7'
+    elif camIdAlias.lower() in ['lupulus', 'chansteen', 'fm13']:
+        CAMID = 'lupulus'
+    elif camIdAlias.lower() in ['maredsous', 'vanhouten', 'fm14']:
+        CAMID = 'maredsous'
+    elif camIdAlias.lower() in ['noblesse', 'zdeneksvestka', 'fm15']:
+        CAMID = 'noblesse'
+    elif camIdAlias.lower() in ['orval', 'cristinaroccati', 'fm16']:
+        CAMID = 'orval'
+    elif camIdAlias.lower() in ['paixdieu', 'anderscelsius', 'fm17']:
+        CAMID = 'paixdieu'
+    elif camIdAlias.lower() in ['quintine', 'marcelgolay', 'fm18']:
+        CAMID = 'quintine'
         
         
     return CAMID
