@@ -18,12 +18,15 @@ __status__ = "beta"
 #     0.0.4 2024-01-05 function "getValueAtTime" added
 #     0.0.5 2024-01-09 few cam aliases added
 #     0.0.6 2024-01-09 cam aliases added up to fm18
-__version__ = "0.0.6_20240304"
+#     0.0.7 2024-03-04 class IMAGE drafted
+
+__version__ = "0.0.7_20240304"
 
 import pandas as pd
 import os
 import numpy as np
 import datetime as datetime
+from astropy.io import fits
 
 
 # how to share variables among classes:
@@ -320,6 +323,108 @@ class HK:
             print('The value of ' + self.pName + ' at time ' + Time + ' is ' + str(Value))
             return [Time, Value]
         
+class IMAGES:
+    def __init__(self, rootDir):
+        # note: *use wisely*. rootDir can be any directory of the file system
+        # the nominal usage is to identify either the facility root or the obsid root
+        if rootDir[-1] == os.sep:
+            rootDir = rootDir[0:-1]
+        self.rootDir = rootDir
+        IMAGES.fileDB = []
+        self._obsidTableF = None
+
+    def load(self,camId=None):            
+        print('Creating the fits file DB for CAM ' + camId + '....')
+        for root, dirs_list, files_list in os.walk(self.rootDir):
+            for fn in files_list:
+                if fn.split('.')[-1].lower() == 'fits':
+                    if camId is None:
+                        self.fileDB.append(os.path.join(root, fn))
+                    elif fn.lower().find(camId2Bier(camId)) != -1:
+                        self.fileDB.append(os.path.join(root, fn))
+        print(' ..... DONE. ' + str(len(self.fileDB)) + ' files in the DB')
+        self.fileDB.sort()
+        if os.path.isfile(self.rootDir + 'obsid-table.txt'):
+            self._obsidTableFound = True
+            self._obsidTableF = self.rootDir + 'obsid-table.txt'
+            try:
+                self.obsidDB = pd.read_fwf(self._obsidTableF,colspecs=[[0,5],[6,9],[10,15],[16,44],[45,1000]], names=['OBSID', 'FACILITY', 'NUM', 'TIME', 'EXEC'], header=None)
+            except FileNotFoundError:
+                self.obsidDB = None
+    
+    def createTOC(self,obsid=None):
+        TOC = []
+        if obsid is not None:
+            obsidT = str(obsid).zfill(5)
+        guhLines = ['CAMERA;CAMNUM;FILENAME;OBSID;EXEC;EXECCMMT;DATE-OBS;CCD_READOUT_ORDER;CYCLETIME;READTIME;DIT;OBJ_CNT;EXT_NUM;NUMIMGS;X;Y;EXTNAME;IMGTYPE;CCD_ID;SENSOR_SEL;SOURCE;DITHER\n']
+        fcount = 0
+        print('\n')
+        for f in self.fileDB:
+            go = True
+            if obsid is not None:
+                if f.find('/' + obsidT +'_') == -1:
+                    go = False
+            if go:
+                hdu = fits.open(f, ignore_missing_simple=True, output_verify='exception', checksum=True)
+                OBSID = str(hdu[0].header['OBSID'])[-5:] 
+                if self.obsidDB is not None:
+                    execLine = self.obsidDB[['EXEC']][self.obsidDB['OBSID']==int(OBSID[:-1])].iloc[0,0]
+                    EXEC = execLine[:execLine.find(')')+1].replace(';','|') + ';'
+                    EXECCMMT = execLine[execLine.find(')')+1:].replace(';','|') + ';'
+                else:
+                    EXEC = ''
+                    CAMID = ''
+                    CAMNUM = ''
+                    EXECCMMT = ''
+                    DATEOBS = hdu[0].header['DATE-OBS']
+                    CCD_READOUT_ORDER = '"' + str(hdu[0].header['CCD_READOUT_ORDER']) + '"'
+                    CYCLETIME = hdu[0].header['CYCLETIME']
+                    READTIME = hdu[0].header['READTIME']
+                    DIT = hdu[0].header['READTIME'] + 0.4
+                    objcnt = 0
+                    for idx in range(1,len(hdu)):
+                        if str(hdu[idx].header['XTENSION']) == 'IMAGE':
+                            objcnt += 1
+                            OBJ_CNT =  objcnt
+                            EXT_NUM = idx
+                            try:
+                                NUMIMGS = hdu[idx].header['NAXIS3']
+                            except KeyError:
+                                NUMIMGS = ''
+                            X =  hdu[idx].header['NAXIS1']
+                            Y =  hdu[idx].header['NAXIS2']
+                            EXTNAME = str(hdu[idx].header['EXTNAME'])
+                            IMGTYPE = EXTNAME[0:extname.find('_')]
+
+                            CCD_ID = str(hdu[idx].header['CCD_ID'])
+                            SENSOR = str(hdu[idx].header['SENSOR_SEL'])
+
+                            TOC.append({
+                                'CAMERA': CAMID,
+                                'CAMNUM': CAMNUM,
+                                'FILENAME': f,
+                                'OBSID': OBSID,
+                                'EXEC': EXEC,
+                                'EXECCMMT': EXECCMMT,
+                                'DATE-OBS': DATEOBS,
+                                'CCD_READOUT_ORDER': CCD_READOUT_ORDER,
+                                'CYCLETIME': CYCLETIME,
+                                'READTIME': READTIME,
+                                'DIT': DIT,
+                                'OBJ_CNT': OBJ_CNT,
+                                'EXT_NUM': EXT_NUM,
+                                'NUMIMGS': NUMIMGS,
+                                'X': X,
+                                'Y': Y,
+                                'EXTNAME': EXTNAME,
+                                'IMGTYPE': IMGTYPE,
+                                'CCD_ID': CCD_ID,
+                                'SENSOR': "",
+                                'SEL': "",
+                                'SOURCE' '':,
+                                'DITHER' '':
+                            })
+
 
 # for debugging and usage reference:
 if False:
