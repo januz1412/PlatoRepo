@@ -103,6 +103,10 @@ def camId2Bier(camIdAlias):
         CAMID = 'paixdieu'
     elif camIdAlias.lower() in ['quintine', 'marcelgolay', 'fm18']:
         CAMID = 'quintine'   
+    elif camIdAlias.lower() in ['rochefort', 'erikabohmvitense', 'fm19']:
+        CAMID = 'rochefort'   
+    elif camIdAlias.lower() in ['valdieu', 'armandvanhoof', 'fm23']:
+        CAMID = 'valdieu'   
     return CAMID
 
 def de_oddify(array, axis='col'):
